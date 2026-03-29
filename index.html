@@ -3,352 +3,544 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Royal Spices | Bridgerton Collection</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Poppins:wght@300;400;600&display=swap');
+    <title>Edgscale Digital - Professional Invoice</title>
+   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Birthstone&display=swap');
 
-        :root {
-            --mccormick-red: #d32f2f;
-            --bridgerton-gold: #c5a059;
-            --bg-cream: #f9f6f0;
+    :root { --primary: #0f172a; --accent: #2563eb; --gray: #64748b; --success: #10b981; }
+
+    body { font-family: 'Segoe UI', sans-serif; background: #f1f5f9; padding: 20px; color: #1e293b; }
+
+    .invoice-wrapper {
+        max-width: 900px;
+        margin: auto;
+        background: white;
+        padding: 40px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Watermark - Updated to EDGSCALE */
+    .invoice-wrapper::after {
+        content: "EDGSCALE DIGITAL";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(-45deg);
+        font-size: 80px;
+        color: rgba(0,0,0,0.02);
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    /* Professional PAID Stamp */
+    #paidStamp {
+        display: none;
+        position: absolute;
+        top: 150px;
+        right: 80px;
+        border: 5px solid var(--success);
+        color: var(--success);
+        padding: 10px 25px;
+        font-size: 35px;
+        font-weight: 900;
+        text-transform: uppercase;
+        transform: rotate(-20deg);
+        border-radius: 10px;
+        opacity: 0.4;
+        z-index: 10;
+        user-select: none;
+    }
+
+    .header { display: flex; justify-content: space-between; border-bottom: 2px solid #e2e8f0; padding-bottom: 20px; margin-bottom: 20px; position: relative; z-index: 1; }
+    .brand h1 { margin: 0; font-size: 28px; color: var(--primary); text-transform: uppercase; }
+    .brand span { color: var(--accent); }
+
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 30px; position: relative; z-index: 1; }
+    input, select { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: inherit; font-size: 14px; }
+
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; position: relative; z-index: 1; }
+    th { background: var(--primary); color: white; padding: 12px; text-align: left; }
+    td { padding: 15px 12px; border-bottom: 1px solid #f1f5f9; }
+
+    .calc-area { margin-top: 20px; display: flex; justify-content: space-between; align-items: flex-start; position: relative; z-index: 1; }
+    .payment-info { background: #f8fafc; padding: 15px; border-radius: 8px; font-size: 13px; width: 45%; border-left: 4px solid var(--accent); }
+
+    .totals { width: 40%; text-align: right; }
+    .grand-total { font-size: 22px; font-weight: 800; color: var(--accent); border-top: 2px solid #e2e8f0; padding-top: 10px; }
+
+    .controls { background: #e2e8f0; padding: 20px; border-radius: 10px; margin-bottom: 20px; display: grid; grid-template-columns: 1fr 1.5fr 1fr 1fr auto; gap: 10px; }
+
+    .btn { border: none; padding: 12px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+    .btn-add { background: var(--accent); color: white; }
+    .btn-add:hover { background: #1d4ed8; transform: translateY(-1px); }
+    .btn-print { background: var(--primary); color: white; width: 100%; margin-top: 20px; font-size: 16px; }
+
+    #sig-space {
+        font-family: 'Birthstone', cursive;
+        font-size: 35px;
+        color: var(--accent);
+        margin-bottom: -5px;
+    }
+
+    .print-only { display: none; }
+
+    @media print {
+        body { background: white; padding: 0; }
+        .invoice-wrapper { box-shadow: none; padding: 0; max-width: 100%; }
+        .controls, .btn-print, .delete-btn, .history-section, .btn, #savedClients, input[type="text"], input[type="number"], select {
+            display: none !important;
         }
+        #invoiceStatus { display: none !important; }
+        .print-only { display: block !important; margin-bottom: 5px; }
+        td, th { border-bottom: 1px solid #e2e8f0 !important; }
+        #paidStamp { opacity: 0.6; display: block; -webkit-print-color-adjust: exact; }
+        .invoice-wrapper::after { color: rgba(0,0,0,0.03); }
+    }
+       /* --- Mobile Friendly CSS --- */
+@media (max-width: 768px) {
+    body { padding: 10px; }
+    .invoice-wrapper { padding: 20px; border-radius: 0; }
+    .header { flex-direction: column; text-align: center; }
+    .header div { text-align: center !important; margin-bottom: 10px; }
+    .brand img { margin: 0 auto 10px auto; }
+    .info-grid { grid-template-columns: 1fr; gap: 20px; }
+    .info-box { text-align: left !important; }
+    .controls { grid-template-columns: 1fr; }
+    .calc-area { flex-direction: column; }
+    .payment-info, .totals { width: 100%; text-align: left; }
+    .totals { margin-top: 20px; border-top: 2px solid #e2e8f0; padding-top: 20px; }
+    table { display: block; overflow-x: auto; white-space: nowrap; }
+    #paidStamp { top: 100px; right: 20px; font-size: 25px; }
+}
+</style>
+  <body>
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--bg-cream);
-            color: #333;
-            scroll-behavior: smooth;
-        }
+<div class="invoice-wrapper">
+    <div id="paidStamp">PAID</div>
 
-        h1, h2, h3, h4, .serif-font {
-            font-family: 'Playfair Display', serif;
-        }
+    <div class="header">
+        <div class="brand">
+            <img src="" alt="Edgscale Logo" style="height: 70px; border-radius: 8px; margin-bottom: 10px; display: block; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
 
-        .hero-banner {
-            background: linear-gradient(rgba(249, 246, 240, 0.7), rgba(249, 246, 240, 0.7)),
-                        url('https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=1500');
-            background-size: cover;
-            background-position: center;
-            min-height: 80vh;
-        }
-
-        .buy-button {
-            background-color: var(--mccormick-red);
-            transition: all 0.3s ease;
-        }
-
-        .buy-button:hover {
-            background-color: #b71c1c;
-            transform: scale(1.05);
-        }
-
-        .product-card {
-            border: 1px solid transparent;
-            transition: all 0.3s ease;
-        }
-
-        .product-card:hover {
-            border: 1px solid var(--bridgerton-gold);
-            transform: translateY(-5px);
-        }
-
-        /* Cart Sidebar */
-        #cart-sidebar {
-            transition: transform 0.3s ease-in-out;
-        }
-    </style>
-</head>
-<body>
-
-    <div class="bg-sky-700 text-white text-center py-2 text-xs font-bold tracking-widest uppercase">
-        Free Shipping on Spice Boxes Over ₹500
+            <h1>edgscale<span>Digital</span></h1>
+            <p style="margin: 5px 0 0 0; font-size: 13px; color: #64748b; font-weight: 500;">
+                IT Services | Graphic Design | Digital Marketing
+            </p>
+        </div>
+        <div style="text-align: right;">
+            <h2 id="displayDocType">INVOICE</h2>
+            <p>ID: <strong id="invId"></strong></p>
+            <p>Date: <span id="currentDate"></span></p>
+            <p style="color: #ef4444; font-weight: bold;">
+                Due: <span id="printDue" class="print-only">On Receipt</span>
+                <input type="text" id="headerDueInput" value="On Receipt" class="no-print"
+                       style="width: 80px; border: none; font-weight: bold; padding: 0; color: #ef4444; background: transparent; text-align: right;"
+                       oninput="document.getElementById('printDue').innerText = this.value">
+            </p>
+        </div>
     </div>
 
-    <nav class="bg-red-600 p-4 sticky top-0 z-50 shadow-lg">
-        <div class="container mx-auto flex justify-between items-center">
-            <button class="text-white border border-white px-4 py-1 rounded text-xs font-bold tracking-tighter uppercase hidden md:block">
-                <i class="fas fa-th-large mr-2"></i> Brands
-            </button>
-            <h1 class="text-white text-3xl font-black italic tracking-tighter">ROYAL SPICES</h1>
-            <div class="flex gap-6 text-white text-xl">
-                <i class="fas fa-search cursor-pointer"></i>
-                <div class="relative cursor-pointer" onclick="toggleCart()">
-                    <i class="fas fa-shopping-cart"></i>
-                    <span id="cart-count" class="absolute -top-2 -right-2 bg-white text-red-600 text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center shadow-md">0</span>
+    <div class="info-grid">
+        <div class="info-box">
+            <h4>Bill To:</h4>
+            <select id="savedClients" onchange="loadClientData()" class="no-print" style="background: #f1f5f9; border: 1px dashed var(--accent);">
+                <option value="">Select Saved Client</option>
+            </select>
+
+            <div id="printName" class="print-only" style="font-weight: bold; font-size: 1.1em; margin-bottom: 5px;"></div>
+            <div id="printAddr" class="print-only" style="white-space: pre-line;"></div>
+
+            <input type="text" id="clientName" placeholder="Client Name" class="no-print" oninput="document.getElementById('printName').innerText = this.value">
+            <textarea id="clientAddress" placeholder="Client Address" class="no-print" rows="2" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:6px;" oninput="document.getElementById('printAddr').innerText = this.value"></textarea>
+
+            <button type="button" class="btn no-print" onclick="saveClient()" style="padding: 5px 10px; font-size: 11px; background: #10b981; color: white; margin-top: 10px; margin-bottom: 15px; border-radius: 4px; border: none; cursor: pointer;">+ Save to Contacts</button>
+        </div>
+        <div class="info-box" style="text-align: right;">
+            <h4>Invoice Details:</h4>
+            <input type="text" id="dueDate" placeholder="Due Date (e.g. 25/03/2026)" class="no-print" style="text-align: right;">
+            <select id="invoiceStatus" onchange="updateCalculations()" class="no-print" style="text-align-last: right;">
+                <option value="UNPAID">Status: Pending</option>
+                <option value="PAID">Status: Paid</option>
+                <option value="PARTIAL">Status: Advance Received</option>
+            </select>
+            <div id="printStatus" class="print-only" style="font-weight: bold; color: var(--accent);"></div>
+        </div>
+    </div>
+
+    <div class="controls no-print">
+        <select id="clientType" onchange="updateCalculations()">
+            <option value="kerala">Kerala Client (GST 18%)</option>
+            <option value="foreign">Foreign Client (Export - 0% Tax)</option>
+        </select>
+        <select id="docType" onchange="updateCalculations()">
+            <option value="INVOICE">Document: INVOICE</option>
+            <option value="QUOTATION">Document: QUOTATION</option>
+        </select>
+      <select id="serviceType">
+    <optgroup label="Digital Marketing">
+        <option value="Social Media Management (SMM)">Social Media Management (SMM)</option>
+        <option value="Social Media Advertising (Meta/Ads)">Social Media Advertising (Meta/Ads)</option>
+        <option value="Search Engine Optimization (SEO)">Search Engine Optimization (SEO)</option>
+        <option value="Google Ads / PPC Management">Google Ads / PPC Management</option>
+        <option value="Content Writing & Strategy">Content Writing & Strategy</option>
+        <option value="Email Marketing Campaign">Email Marketing Campaign</option>
+        <option value="Influencer Marketing Setup">Influencer Marketing Setup</option>
+        <option value="YouTube Channel Growth & SEO">YouTube Channel Growth & SEO</option>
+        <option value="Digital PR & Guest Posting">Digital PR & Guest Posting</option>
+    </optgroup>
+
+    <optgroup label="Graphic Design & Branding">
+        <option value="Professional Logo & Brand Identity">Professional Logo & Brand Identity</option>
+        <option value="Social Media Poster Design">Social Media Poster Design</option>
+        <option value="UI/UX Design (Mobile & Web)">UI/UX Design (Mobile & Web)</option>
+        <option value="Video Editing & Motion Graphics">Video Editing & Motion Graphics</option>
+        <option value="Brochure & Business Card Design">Brochure & Business Card Design</option>
+        <option value="Product Packaging Design">Product Packaging Design</option>
+        <option value="3D Modeling & Visualization">3D Modeling & Visualization</option>
+        <option value="Thumbnail & Presentation Design">Thumbnail & Presentation Design</option>
+        <option value="Character Design & Illustration">Character Design & Illustration</option>
+    </optgroup>
+
+    <optgroup label="Web & IT Services">
+        <option value="Business Website Development">Business Website Development</option>
+        <option value="E-commerce Store (Shopify/Woo)">E-commerce Store (Shopify/Woo)</option>
+        <option value="Custom Software Development">Custom Software Development</option>
+        <option value="Mobile App Development (Android/iOS)">Mobile App Development (Android/iOS)</option>
+        <option value="Domain & Cloud Hosting Setup">Domain & Cloud Hosting Setup</option>
+        <option value="Website Maintenance & Support">Website Maintenance & Support</option>
+        <option value="Software License & Installation">Software License & Installation</option>
+        <option value="IT Technical Support & Security">IT Technical Support & Security</option>
+        <option value="API Integration & Automations">API Integration & Automations</option>
+    </optgroup>
+
+    <optgroup label="Consultancy & Others">
+        <option value="Digital Business Consultation">Digital Business Consultation</option>
+        <option value="Business Documentation & PPT">Business Documentation & PPT</option>
+        <option value="Google My Business (GMB) Setup">Google My Business (GMB) Setup</option>
+    </optgroup>
+</select>
+        <input type="number" id="qty" value="1">
+        <input type="number" id="price" placeholder="Price">
+        <button class="btn btn-add" onclick="addItem()">Add Item</button>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th>Unit/Qty</th>
+                <th>Rate</th>
+                <th>Total</th>
+                <th class="delete-btn no-print"></th>
+            </tr>
+        </thead>
+        <tbody id="invoiceBody"></tbody>
+    </table>
+
+    <div class="calc-area">
+        <div class="payment-info">
+            <h4 style="margin:0 0 10px 0;">Payment Details:</h4>
+            <p><strong>Bank:</strong> Federal Bank</p>
+            <p><strong>A/C:</strong> 99980117742143</p>
+            <p><strong>IFSC:</strong> FDRL0001647</p>
+            <p><strong>UPI ID:</strong> 9567497943@ibl</p>
+
+            <div id="qr-container" style="margin-top:15px; display:flex; align-items:center; gap:10px;">
+                <img id="qr_code" src="" style="width:110px; height:110px; border:1px solid #ccc; background:#fff; padding:5px;" alt="Scan to Pay">
+                <div style="font-size:11px; color:var(--gray);">
+                    <b>SCAN TO PAY</b><br>GPay, PhonePe, Paytm<br>
+                    <span style="color:var(--accent)">Amount updates live</span>
                 </div>
-                <i class="fas fa-bars md:hidden"></i>
+            </div>
+
+            <div style="margin-top: 30px; text-align: left; border-top: 1px solid #e2e8f0; padding-top: 10px;">
+                <div id="sig-space">edgscale digital</div>
+                <p style="margin:0; font-weight: bold;">Authorized Signatory</p>
             </div>
         </div>
-    </nav>
 
-    <section class="hero-banner flex flex-col items-center justify-center text-center px-4">
-        <div class="flex items-center gap-4 mb-4">
-            <span class="text-2xl font-bold tracking-widest uppercase serif-font">BRIDGERTON</span>
-            <span class="text-2xl font-light">|</span>
-            <span class="text-2xl italic serif-font">Royal Spices</span>
-        </div>
-        <p class="uppercase tracking-widest text-xs font-bold mb-8">Exclusive Limited Edition</p>
-        <h2 class="text-5xl md:text-7xl font-bold text-gray-800 mb-8 uppercase tracking-tight">
-            Exotic Finishing <br> Spices
-        </h2>
-        <a href="#menu" class="buy-button text-white px-12 py-4 rounded-full text-lg font-bold uppercase tracking-widest shadow-xl">
-            Explore Flavors
-        </a>
-    </section>
-
-    <section id="menu" class="py-16 container mx-auto px-4">
-        <h3 class="text-4xl font-bold mb-8 text-gray-800">Featured Spices</h3>
-
-        <div class="flex gap-8 border-b border-gray-200 mb-10 overflow-x-auto pb-2">
-            <button class="text-sky-700 font-bold border-b-2 border-sky-700 pb-2 whitespace-nowrap">NEW! LIMITED EDITION</button>
-            <button class="text-gray-500 font-bold hover:text-sky-700 transition pb-2 whitespace-nowrap uppercase">Herbs & Salts</button>
-            <button class="text-gray-500 font-bold hover:text-sky-700 transition pb-2 whitespace-nowrap uppercase">Seasoning Mixes</button>
-        </div>
-
-        <div id="product-list" class="grid grid-cols-1 md:grid-cols-3 gap-12">
-            <div class="text-center product-card p-6 rounded-2xl bg-white shadow-sm">
-                <img src="https://images.unsplash.com/photo-1532336414038-cf19250c5757?auto=format&fit=crop&w=400" alt="Strawberries & Cream" class="mx-auto h-64 object-cover rounded-xl mb-4">
-                <p class="text-xs uppercase text-amber-600 font-bold tracking-widest mb-2">Bridgerton Selection</p>
-                <h4 class="text-2xl font-bold mb-2">Strawberry Finishing Sugar</h4>
-                <p class="text-red-600 font-bold mb-4">₹180</p>
-                <button onclick="addToCart('Strawberry Sugar', 180)" class="w-full py-3 buy-button text-white rounded-full font-bold uppercase text-xs tracking-widest">Add to Cart</button>
-            </div>
-
-            <div class="text-center product-card p-6 rounded-2xl bg-white shadow-sm">
-                <img src="https://images.unsplash.com/photo-1599317616147-7590214a6015?auto=format&fit=crop&w=400" alt="Sweet Lemon" class="mx-auto h-64 object-cover rounded-xl mb-4">
-                <p class="text-xs uppercase text-amber-600 font-bold tracking-widest mb-2">Bridgerton Selection</p>
-                <h4 class="text-2xl font-bold mb-2">Sweet Lemon Finishing Sugar</h4>
-                <p class="text-red-600 font-bold mb-4">₹210</p>
-                <button onclick="addToCart('Lemon Sugar', 210)" class="w-full py-3 buy-button text-white rounded-full font-bold uppercase text-xs tracking-widest">Add to Cart</button>
-            </div>
-
-            <div class="text-center product-card p-6 rounded-2xl bg-white shadow-sm">
-                <img src="https://images.unsplash.com/photo-1627483262268-9c2b5b2834b5?auto=format&fit=crop&w=400" alt="Lavender" class="mx-auto h-64 object-cover rounded-xl mb-4">
-                <p class="text-xs uppercase text-amber-600 font-bold tracking-widest mb-2">Bridgerton Selection</p>
-                <h4 class="text-2xl font-bold mb-2">Lavender Vanilla Sugar</h4>
-                <p class="text-red-600 font-bold mb-4">₹250</p>
-                <button onclick="addToCart('Lavender Sugar', 250)" class="w-full py-3 buy-button text-white rounded-full font-bold uppercase text-xs tracking-widest">Add to Cart</button>
-            </div>
-        </div>
-    </section>
-    <section class="bg-white py-20 border-t border-b">
-    <div class="container mx-auto px-4">
-        <h3 class="text-3xl font-bold mb-12 text-center serif-font italic">Testimonials from the Ton</h3>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="p-8 bg-[#f9f6f0] rounded-2xl text-center">
-                <div class="text-yellow-500 mb-4"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-                <p class="italic text-gray-600 mb-4">"The Lavender Spice is truly divine. A must-have for every tea party!"</p>
-                <p class="font-bold uppercase text-[10px] tracking-widest text-[#c5a059]">- Lady Whistledown</p>
-            </div>
-            <div class="p-8 bg-[#f9f6f0] rounded-2xl text-center">
-                <div class="text-yellow-500 mb-4"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-                <p class="italic text-gray-600 mb-4">"Exceptional quality. The packaging itself feels like a royal gift."</p>
-                <p class="font-bold uppercase text-[10px] tracking-widest text-[#c5a059]">- Duke of Hastings</p>
-            </div>
-            <div class="p-8 bg-[#f9f6f0] rounded-2xl text-center">
-                <div class="text-yellow-500 mb-4"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-                <p class="italic text-gray-600 mb-4">"Ordering on WhatsApp was incredibly convenient. 10/10 recommendation!"</p>
-                <p class="font-bold uppercase text-[10px] tracking-widest text-[#c5a059]">- Eloise Bridgerton</p>
-            </div>
+        <div class="totals">
+            <p>Subtotal: <span id="subtotal">₹0.00</span></p>
+            <p>Discount (%):
+                <span id="printDisc" class="print-only">0%</span>
+                <input type="number" id="discountPerc" value="0" class="no-print" oninput="updateCalculations()" style="width: 60px; padding: 5px;">
+            </p>
+            <p id="tax">GST (18%): ₹0.00</p>
+            <p class="grand-total">Total: <span id="grandTotal">₹0.00</span></p>
+            <div id="wordsContainer" style="font-size: 11px; color: var(--gray); font-style: italic; margin-top: 10px; text-align: right;"></div>
         </div>
     </div>
-</section>
 
-    <div id="cart-sidebar" class="fixed top-0 right-0 w-full md:w-96 h-full bg-white shadow-2xl z-[100] translate-x-full overflow-y-auto">
-        <div class="p-6">
-            <div class="flex justify-between items-center mb-8 border-b pb-4">
-                <h3 class="text-2xl font-bold">Your Selection</h3>
-                <button onclick="toggleCart()" class="text-2xl">&times;</button>
-            </div>
-
-            <div id="cart-items" class="space-y-4 mb-8 text-sm">
-                <p class="text-gray-400 italic">Your cart is empty.</p>
-            </div>
-
-            <div class="border-t pt-4 mb-8">
-                <div class="flex justify-between font-bold text-lg">
-                    <span>Total:</span>
-                    <span id="cart-total">₹0</span>
-                </div>
-            </div>
-
-            <div class="mb-6 p-4 bg-gray-50 rounded-xl border border-dashed border-[#c5a059]">
-    <p class="text-[10px] font-bold mb-2 uppercase tracking-widest text-gray-500">Have a Promo Code?</p>
-    <div class="flex gap-2">
-        <input type="text" id="coupon-input" placeholder="e.g. ROYAL50" class="w-full p-2 text-sm border rounded focus:outline-none focus:ring-1 focus:ring-red-600">
-        <button onclick="applyCoupon()" class="bg-black text-white px-4 py-2 rounded text-[10px] font-bold uppercase hover:bg-gray-800 transition">Apply</button>
+    <div style="margin-top: 20px; font-size: 11px; color: #64748b; border-top: 1px solid #e2e8f0; padding-top: 10px;">
+        <strong>Terms & Conditions:</strong>
+        <p style="margin: 2px 0;">1. Support available for 30 days from project delivery.</p>
+        <p style="margin: 2px 0;">2. 50% advance payment is non-refundable.</p>
+        <p style="margin: 2px 0;">3. Payment should be made within the due date.</p>
     </div>
-    <p id="coupon-msg" class="text-[10px] mt-2 hidden font-bold"></p>
+
+    <button class="btn btn-print no-print" onclick="printInvoice()">Print / Save as PDF</button>
+    <button class="btn no-print" onclick="shareToWhatsApp()" style="background: #25d366; color: white; width: 100%; margin-top: 10px; font-size: 16px;">Share to WhatsApp</button>
 </div>
 
-            <div id="address-section" class="hidden">
-                <h4 class="font-bold mb-4 uppercase text-xs tracking-widest border-b pb-2">Delivery Details</h4>
-                <div class="space-y-3">
-                    <input type="text" id="cust-name" placeholder="Full Name" class="w-full p-2 border rounded text-sm">
-                    <textarea id="cust-address" placeholder="Delivery Address" class="w-full p-2 border rounded text-sm" rows="3"></textarea>
-                    <button onclick="checkoutToWhatsApp()" class="w-full py-4 buy-button text-white rounded-full font-bold uppercase tracking-widest text-xs">Confirm Order on WhatsApp</button>
-                </div>
-            </div>
-        </div>
-    </div>
+<div class="invoice-wrapper history-section no-print" style="margin-top: 20px; font-size: 13px;">
+    <h3>Recent Invoices</h3>
+    <table style="width:100%; font-size: 12px; border-collapse: collapse;">
+        <thead>
+            <tr style="background:#f1f5f9;">
+                <th style="padding:10px;">Inv ID</th>
+                <th>Client</th>
+                <th>Total</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="recentInvoicesBody"></tbody>
+    </table>
+    <button onclick="localStorage.removeItem('edg_history'); location.reload();" style="margin-top:10px; font-size:10px; color:red; border:none; background:none; cursor:pointer;">Clear History</button>
+</div>
 
-    <a href="https://wa.me/910000000000" id="whatsapp-float" class="fixed bottom-6 right-6 bg-green-500 text-white p-4 rounded-full shadow-2xl z-50 hover:scale-110 transition-transform">
-        <i class="fab fa-whatsapp text-3xl"></i>
-    </a>
+<script>
+    const upiId = "9567497943@ibl";
+    const upiName = "Edgscale Digital";
+    // Updated local storage key to edg_clients
+    let clients = JSON.parse(localStorage.getItem('edg_clients')) || [];
 
-     class="bg-white border-t py-12 text-center text-gray-400 text-xs uppercase tracking-widest">
-        &copy; 2026 Royal Spices Bridgerton Collection. Pure Taste. Royal Experience.
-        <footer class="bg-white border-t py-16">
-    <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-        <div>
-            <h4 class="font-bold mb-6 uppercase tracking-widest text-sm">Visit Our Royal Boutique</h4>
-            <div class="rounded-2xl overflow-hidden shadow-2xl border-4 border-white">
-                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3151.8354345093643!2d144.9537353153167!3d-37.81627977975124!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad642af0f11fd81%3A0x5045675218ce6e0!2zTWVsYm91cm5lIFZJQywgQXVzdHJhbGlh!5e0!3m2!1sen!2sin!4v1633000000000!5m2!1sen!2sin" width="100%" height="250" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
-            </div>
-        </div>
-        <div class="text-center md:text-right">
-            <h1 class="text-4xl font-black italic mb-2 tracking-tighter">ROYAL SPICES</h1>
-            <p class="text-gray-400 text-xs tracking-[4px] uppercase">Est. 1813 | Bridgerton Collection</p>
-        </div>
-    </div>
-    </footer>
+    window.onload = function() {
+        document.getElementById("currentDate").innerText = new Date().toLocaleDateString('en-IN');
 
-    <script>
-        let cart = [];
-        const myWhatsAppNumber = "919876543210"; // REPLACE WITH YOUR NUMBER
+        let lastInvId = localStorage.getItem('edg_last_inv_id') || 100;
+        let nextInvId = parseInt(lastInvId) + 1;
+        // Updated Prefix to EDG
+        document.getElementById("invId").innerText = "EDG-2026-" + nextInvId;
 
-        function toggleCart() {
-            const sidebar = document.getElementById('cart-sidebar');
-            sidebar.classList.toggle('translate-x-full');
-        }
+        updateClientDropdown();
+        updateHistoryTable();
+        updateCalculations();
+    };
 
-        function addToCart(name, price) {
-            cart.push({ name, price });
-            updateCart();
-            if(document.getElementById('cart-sidebar').classList.contains('translate-x-full')) {
-                toggleCart();
-            }
-        }
-
-        function updateCart() {
-            const container = document.getElementById('cart-items');
-            const countLabel = document.getElementById('cart-count');
-            const totalLabel = document.getElementById('cart-total');
-            const addressSection = document.getElementById('address-section');
-
-            countLabel.innerText = cart.length;
-
-            if (cart.length === 0) {
-                container.innerHTML = '<p class="text-gray-400 italic">Your cart is empty.</p>';
-                totalLabel.innerText = "₹0";
-                addressSection.classList.add('hidden');
-                return;
-            }
-
-            addressSection.classList.remove('hidden');
-            container.innerHTML = '';
-            let total = 0;
-
-            cart.forEach((item, index) => {
-                total += item.price;
-                container.innerHTML += `
-                    <div class="flex justify-between items-center border-b pb-2">
-                        <div>
-                            <p class="font-bold">${item.name}</p>
-                            <p class="text-red-600">₹${item.price}</p>
-                        </div>
-                        <button onclick="removeItem(${index})" class="text-gray-400 hover:text-red-600"><i class="fas fa-trash"></i></button>
-                    </div>
-                `;
-            });
-
-            totalLabel.innerText = `₹${total}`;
-        }
-
-        function removeItem(index) {
-            cart.splice(index, 1);
-            updateCart();
-        }
-
-        function checkoutToWhatsApp() {
-            const name = document.getElementById('cust-name').value;
-            const address = document.getElementById('cust-address').value;
-
-            if (!name || !address) {
-                alert("Please fill in your name and delivery address.");
-                return;
-            }
-
-            let message = "*ROYAL SPICES - NEW ORDER*%0A";
-            message += "--------------------------%0A";
-            message += `*Customer:* ${name}%0A`;
-            message += `*Address:* ${address}%0A`;
-            message += "--------------------------%0A";
-            message += "*Items Ordered:*%0A";
-
-            cart.forEach(item => {
-                message += `• ${item.name} - ₹${item.price}%0A`;
-            });
-
-            const total = document.getElementById('cart-total').innerText;
-            message += "--------------------------%0A";
-            message += `*GRAND TOTAL: ${total}*%0A%0A`;
-            message += "_Please confirm my order!_";
-
-            const whatsappUrl = `https://wa.me/${myWhatsAppNumber}?text=${message}`;
-            window.open(whatsappUrl, '_blank');
-        }
-        // Dark Mode Toggle Logic
-function toggleDarkMode() {
-    document.body.classList.toggle('dark-mode');
-    const icon = document.getElementById('dark-icon');
-    if (document.body.classList.contains('dark-mode')) {
-        icon.classList.replace('fa-moon', 'fa-sun');
-    } else {
-        icon.classList.replace('fa-sun', 'fa-moon');
+    function saveClient() {
+        const name = document.getElementById('clientName').value;
+        const address = document.getElementById('clientAddress').value;
+        if (!name || !address) return alert("ദയവായി പേരും അഡ്രസ്സും നൽകുക!");
+        if (clients.find(c => c.name === name)) return alert("ഈ ക്ലയന്റ് ലിസ്റ്റിൽ ഉണ്ട്!");
+        clients.push({ name, address });
+        localStorage.setItem('edg_clients', JSON.stringify(clients));
+        updateClientDropdown();
+        alert("ക്ലയന്റിനെ സേവ് ചെയ്തു!");
     }
-}
 
-// Coupon Logic
-let discountAmount = 0;
-function applyCoupon() {
-    const code = document.getElementById('coupon-input').value.trim().toUpperCase();
-    const msg = document.getElementById('coupon-msg');
-
-    if (code === "ROYAL50") {
-        discountAmount = 50;
-        msg.innerText = "✨ ROYAL50 Applied! ₹50 Discounted.";
-        msg.className = "text-[10px] mt-2 text-green-600 block font-bold";
-    } else {
-        discountAmount = 0;
-        msg.innerText = "❌ Invalid Promo Code";
-        msg.className = "text-[10px] mt-2 text-red-600 block font-bold";
+    function updateClientDropdown() {
+        const dropdown = document.getElementById('savedClients');
+        dropdown.innerHTML = '<option value="">Select Saved Client</option>';
+        clients.forEach((client, index) => {
+            const opt = document.createElement('option');
+            opt.value = index;
+            opt.innerText = client.name;
+            dropdown.appendChild(opt);
+        });
     }
-    updateCart(); // updates the total display
-}
 
-// Simple Invoice Download Logic
-function downloadReceipt() {
-    if (cart.length === 0) return alert("Please add items to cart first!");
+    function loadClientData() {
+        const idx = document.getElementById('savedClients').value;
+        if (idx === "") return;
+        const selected = clients[idx];
+        document.getElementById('clientName').value = selected.name;
+        document.getElementById('clientAddress').value = selected.address;
+        document.getElementById('printName').innerText = selected.name;
+        document.getElementById('printAddr').innerText = selected.address;
+    }
 
-    let content = "--- ROYAL SPICES INVOICE ---\n";
-    content += "Date: " + new Date().toLocaleDateString() + "\n\n";
-    cart.forEach(item => {
-        content += `${item.name}: ₹${item.price}\n`;
-    });
-    content += "\nDiscount: ₹" + discountAmount;
-    content += "\nTOTAL AMOUNT: " + document.getElementById('cart-total').innerText;
-    content += "\n\nThank you for choosing Royalty.";
+    function addItem() {
+        const service = document.getElementById("serviceType").value;
+        const qty = parseFloat(document.getElementById("qty").value) || 1;
+        const price = parseFloat(document.getElementById("price").value);
+        if(!price || price <= 0) return alert("ദയവായി കൃത്യമായ വില നൽകുക!");
 
-    const blob = new Blob([content], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "Royal_Spices_Invoice.txt";
-    a.click();
-}
-    </script>
+        addTableRow(service, qty, price);
+        updateCalculations();
+        document.getElementById("price").value = "";
+    }
+
+    function addTableRow(service, qty, price) {
+        const total = qty * price;
+        const row = document.getElementById("invoiceBody").insertRow();
+        row.innerHTML = `
+            <td><strong>${service}</strong></td>
+            <td>${qty}</td>
+            <td>${parseFloat(price).toFixed(2)}</td>
+            <td class="row-total">${parseFloat(total).toFixed(2)}</td>
+            <td class="delete-btn no-print"><button onclick="removeRow(this)" style="color:red; background:none; border:none; cursor:pointer; font-weight:bold;">✕</button></td>
+        `;
+    }
+
+    function removeRow(btn) {
+        btn.closest('tr').remove();
+        updateCalculations();
+    }
+
+    function updateCalculations() {
+        let currentSubtotal = 0;
+        document.querySelectorAll(".row-total").forEach(td => {
+            currentSubtotal += parseFloat(td.innerText) || 0;
+        });
+
+        const clientType = document.getElementById("clientType").value;
+        const docType = document.getElementById("docType").value;
+        const status = document.getElementById("invoiceStatus").value;
+        const discountPerc = parseFloat(document.getElementById("discountPerc").value) || 0;
+
+        const discountAmount = currentSubtotal * (discountPerc / 100);
+        const discountedBase = currentSubtotal - discountAmount;
+
+        document.getElementById("displayDocType").innerText = docType;
+        if(document.getElementById("printDisc")) {
+            document.getElementById("printDisc").innerText = discountPerc + "%";
+        }
+
+        let taxHtml = "";
+        let finalTotal = 0;
+        let currencySym = (clientType === "kerala") ? "₹" : "$";
+
+        if (clientType === "kerala") {
+            const cgst = discountedBase * 0.09;
+            const sgst = discountedBase * 0.09;
+            finalTotal = discountedBase + cgst + sgst;
+            taxHtml = `CGST (9%): ₹${cgst.toLocaleString('en-IN', {minimumFractionDigits: 2})}<br>
+                       SGST (9%): ₹${sgst.toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
+            document.getElementById("qr-container").style.display = "flex";
+        } else {
+            finalTotal = discountedBase;
+            taxHtml = "Export of Services (Zero Rated)";
+            document.getElementById("qr-container").style.display = "none";
+        }
+
+        document.getElementById("subtotal").innerText = currencySym + currentSubtotal.toLocaleString('en-IN', {minimumFractionDigits: 2});
+        document.getElementById("tax").innerHTML = taxHtml;
+        document.getElementById("grandTotal").innerText = currencySym + finalTotal.toLocaleString('en-IN', {minimumFractionDigits: 2});
+
+        document.getElementById("paidStamp").style.display = (status === "PAID") ? "block" : "none";
+        if(document.getElementById("printStatus")) {
+            document.getElementById("printStatus").innerText = "Status: " + status;
+        }
+
+        let words = "Total Amount in Words: " + (clientType === "kerala" ? "Indian Rupees " : "US Dollars ") + finalTotal.toFixed(2) + " Only";
+        document.getElementById("wordsContainer").innerText = words;
+
+        updateQR(finalTotal);
+    }
+
+    function updateQR(total) {
+        const amount = document.getElementById("clientType").value === "kerala" ? total.toFixed(2) : "0";
+        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=${upiId}&pn=${encodeURIComponent(upiName)}&am=${amount}&cu=INR`;
+        document.getElementById("qr_code").src = qrUrl;
+    }
+
+    function printInvoice() {
+        const name = document.getElementById("clientName").value;
+        if(!name) return alert("Client name നൽകൂ!");
+
+        let currentFullId = document.getElementById("invId").innerText;
+        let items = [];
+        document.querySelectorAll("#invoiceBody tr").forEach(row => {
+            items.push({
+                service: row.cells[0].innerText,
+                qty: row.cells[1].innerText,
+                price: row.cells[2].innerText
+            });
+        });
+
+        // Updated history storage key
+        let history = JSON.parse(localStorage.getItem('edg_history')) || [];
+        history.push({
+            id: currentFullId,
+            name: name,
+            address: document.getElementById("clientAddress").value,
+            total: document.getElementById("grandTotal").innerText,
+            clientType: document.getElementById("clientType").value,
+            docType: document.getElementById("docType").value,
+            status: document.getElementById("invoiceStatus").value,
+            discount: document.getElementById("discountPerc").value,
+            dueDate: document.getElementById("headerDueInput").value,
+            items: items,
+            date: document.getElementById("currentDate").innerText
+        });
+
+        localStorage.setItem('edg_history', JSON.stringify(history));
+        localStorage.setItem('edg_last_inv_id', currentFullId.split('-').pop());
+
+        window.print();
+        updateHistoryTable();
+    }
+
+    function updateHistoryTable() {
+        let history = JSON.parse(localStorage.getItem('edg_history')) || [];
+        const tableBody = document.getElementById("recentInvoicesBody");
+        if(!tableBody) return;
+        tableBody.innerHTML = "";
+
+        history.slice().reverse().slice(0, 5).forEach((item, index) => {
+            const row = tableBody.insertRow();
+            const realIndex = history.length - 1 - index;
+            row.innerHTML = `
+                <td style="padding:5px;">${item.id}</td>
+                <td>${item.name}</td>
+                <td>${item.total}</td>
+                <td><button onclick="viewOldBill(${realIndex})" style="background:var(--accent); color:white; border:none; padding:3px 8px; border-radius:4px; cursor:pointer; font-size:10px;">View</button></td>
+            `;
+        });
+    }
+
+    function viewOldBill(index) {
+        let history = JSON.parse(localStorage.getItem('edg_history')) || [];
+        let bill = history[index];
+        if(!bill) return;
+
+        document.getElementById("invId").innerText = bill.id;
+        document.getElementById("clientName").value = bill.name;
+        document.getElementById("clientAddress").value = bill.address;
+        document.getElementById("printName").innerText = bill.name;
+        document.getElementById("printAddr").innerText = bill.address;
+        document.getElementById("clientType").value = bill.clientType;
+        document.getElementById("docType").value = bill.docType;
+        document.getElementById("invoiceStatus").value = bill.status;
+        document.getElementById("discountPerc").value = bill.discount;
+        document.getElementById("currentDate").innerText = bill.date;
+
+        if(bill.dueDate) {
+            document.getElementById("headerDueInput").value = bill.dueDate;
+            document.getElementById("printDue").innerText = bill.dueDate;
+        }
+
+        document.getElementById("invoiceBody").innerHTML = "";
+        bill.items.forEach(item => {
+            addTableRow(item.service, item.qty, item.price);
+        });
+
+        updateCalculations();
+        alert("Bill " + bill.id + " loaded!");
+    }
+
+    function shareToWhatsApp() {
+        const name = document.getElementById("clientName").value;
+        const invId = document.getElementById("invId").innerText;
+        const total = document.getElementById("grandTotal").innerText;
+        const dueDate = document.getElementById("headerDueInput").value || "On Receipt";
+        const docType = document.getElementById("docType").value;
+
+        if (!name) return alert("ദയവായി ക്ലയന്റ് പേര് നൽകുക!");
+
+        const message = `*${docType} FROM EDGSCALE DIGITAL*%0A%0A` +
+                        `Hi ${name},%0A` +
+                        `Please find the details of your ${docType.toLowerCase()}:%0A%0A` +
+                        `*ID:* ${invId}%0A` +
+                        `*Total Amount:* ${total}%0A` +
+                        `*Due Date:* ${dueDate}%0A%0A` +
+                        `Please complete the payment to avoid service delays. Thank you for choosing Edgscale Digital!`;
+
+        window.open(`https://wa.me/?text=${message}`, '_blank');
+    }
+</script>
 </body>
 </html>
